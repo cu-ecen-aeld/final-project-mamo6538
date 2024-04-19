@@ -122,7 +122,7 @@ ssize_t aht20_read(struct file *filp, char __user *buf, size_t count,
     msleep(80);  
     
     //read temp and humidity data
-    int num_read = i2c_smbus_read_block_data(aht20_device.aht20_client, STATUS_ADDR, 6, &data_bytes);
+    int num_read = i2c_smbus_read_i2c_block_data(aht20_device.aht20_client, STATUS_ADDR, 6, data_bytes);
     if(!num_read) {
         printk(KERN_ERR "Couldn't read the data.");
     }
