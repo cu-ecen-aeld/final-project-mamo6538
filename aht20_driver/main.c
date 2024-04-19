@@ -49,7 +49,26 @@ struct i2c_board_info aht20_i2c_board = {
     .platform_data = NULL,
 };
 
+static int aht20_init_sensor(void)
+{
+    int retval = 0;
+    uint8_t data_byte = 0;
+       
+    //check calibration bit 
+    data_byte = i2c_smbus_read_byte_data(aht20_device.aht20_client, STATUS_ADDR);
+    uint8_t cal_bit = (data_byte >> CAL_BIT) & 0x01;
+    if(!cal_bit) {
+        PDEBUG("starting calibration.");
+        //send init command
+        int result = i2c_smbus_write_word_data(aht20_device.aht20_client, INIT_ADDR, INIT_DATA);
+        if(result < 0) {
+            printk(KERN_ERR "Couldn't initialize sensor.");
+            retval = -1;
+        }
+    } 
 
+    return retval;
+}
 
 int aht20_open(struct inode *inode, struct file *filp)
 {
@@ -103,7 +122,7 @@ ssize_t aht20_read(struct file *filp, char __user *buf, size_t count,
     msleep(80);  
     
     //read temp and humidity data
-    int num_read = i2c_read_block_data(aht20_device.aht20_client, STATUS_ADDR, 6, &data_bytes);
+    int num_read = i2c_smbus_read_block_data(aht20_device.aht20_client, STATUS_ADDR, 6, &data_bytes);
     if(!num_read) {
         printk(KERN_ERR "Couldn't read the data.");
     }
@@ -132,7 +151,7 @@ send:
     //copy to user
     if(copy_to_user(buf, buffer, BUFF_LEN)) {
         retval = -EFAULT;
-        goto end;
+        goto exit;
     }
     
     retval = BUFF_LEN;
@@ -162,27 +181,6 @@ static int aht20_setup_cdev(struct aht20_dev *dev)
         printk(KERN_ERR "Error %d adding aht20 cdev", err);
     }
     return err;
-}
-
-static uint8_t aht20_init_sensor(void)
-{
-    int retval = 0;
-    uint8_t data_byte = 0;
-       
-    //check calibration bit 
-    data_byte = i2c_smbus_read_byte_data(aht20_device.aht20_client, STATUS_ADDR);
-    uint8_t cal_bit = (data_byte >> CAL_BIT) & 0x01;
-    if(!cal_bit) {
-        PDEBUG("starting calibration.");
-        //send init command
-        int result = i2c_smbus_write_word_data(aht20_device.aht20_client, INIT_ADDR, INIT_DATA);
-        if(result < 0) {
-            printk(KERN_ERR "Couldn't initialize sensor.");
-            retval = -1;
-        }
-    } 
-
-    return retval;
 }
 
 int aht20_init_module(void)
