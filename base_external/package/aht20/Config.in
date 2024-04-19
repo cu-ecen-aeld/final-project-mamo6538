@@ -1,0 +1,6 @@
+
+config BR2_PACKAGE_AHT20
+	bool "aht20"
+	help
+	  Includes the aht20 driver I wrote in the kernel image.
+	  Used to create a driver for the aht20 temp/humidity server.

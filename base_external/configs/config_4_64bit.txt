@@ -36,4 +36,4 @@ dtoverlay=imx219
 arm_64bit=1
 
 # enable I2C
-dtparam=i2c_arm=on
+dtparam=i2c_arm=on, dtparam=i2c_baudrate=100000
