@@ -107,6 +107,8 @@ ssize_t aht20_read(struct file *filp, char __user *buf, size_t count,
     //error checking
     if(count == 0) goto exit;
     
+    if(*f_pos > 0) goto exit;
+    
     //get the circular buffer (get device struct)
     struct aht20_dev* dev = filp->private_data;
     
@@ -155,9 +157,9 @@ send:
     }
     
     //update fpos
-    *f_pos = 0;
+    *f_pos = BUFF_LEN;
     
-    retval = 0; //only read once
+    retval = BUFF_LEN; //only read once
     
     
 exit:
