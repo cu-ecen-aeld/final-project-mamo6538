@@ -146,7 +146,7 @@ ssize_t aht20_read(struct file *filp, char __user *buf, size_t count,
 send:
     //format the converted data
     memset(buffer, 0, BUFF_LEN);
-    snprintf(buffer, BUFF_LEN, "temp:%dC, humid:%d%", temp, humidity);
+    snprintf(buffer, BUFF_LEN, "temp:%dC, humid:%d\n", temp, humidity);
 
     //copy to user
     if(copy_to_user(buf, buffer, BUFF_LEN)) {
@@ -154,7 +154,10 @@ send:
         goto exit;
     }
     
-    retval = BUFF_LEN;
+    //update fpos
+    *f_pos = 0;
+    
+    retval = 0; //only read once
     
     
 exit:
