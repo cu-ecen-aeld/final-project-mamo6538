@@ -6,32 +6,7 @@ Can be found in this link: [Project Overview](https://github.com/cu-ecen-aeld/fi
 ## Final Project Schedule
 Can be found in this link: [Schedule](https://github.com/users/kbiggs/projects/1/views/1?groupedBy%5BcolumnId%5D=87406173)
 
-# buildroot-rpi
+# Repo Description
+This repository holds the applications and drivers used in the buildroot setup for the rpi (3b or 4b).
 
-This repository contains assignment starter code for buildroot based assignments for the course Advanced Embedded Software Design, ECEN 5713
-
-We will be using rpi3
-
-Configuration of rpi  for Buildroot:
-----------------------------
-Other configuration of rpi:
-----------------------------
-For models A, B, A+ or B+:
-
-  $ make raspberrypi_defconfig
-
-For model Zero (model A+ in smaller form factor):
-
-  $ make raspberrypi0_defconfig
-
-For model 2 B:
-
-  $ make raspberrypi2_defconfig
-
-For model 3 B and B+:
-
-  $ make raspberrypi3_defconfig
-
-For model 4 B:
-
-  $ make raspberrypi4_defconfig
+It is intended to be used in tandem with [buildroot repo](https://github.com/cu-ecen-aeld/final-project-kbiggs)
