@@ -1,0 +1,25 @@
+#! /bin/sh
+
+case "$1" in
+	start)
+	  echo "Load i2c driver"
+	  modprobe i2c-bcm2835
+	  modprobe i2c-dev
+	  
+	  echo "Load aht20 sensor driver"
+	  aht20_load
+	  ;;
+	stop)
+	  echo "Unload aht20 sensor driver"
+	  aht20_unload
+	  
+	  echo "Unload i2c driver"
+	  rmmod i2c-bcm2835
+	  rmmod i2c-dev
+	  ;;
+	*)
+	  echo "Usage: $0 {start | stop}"
+	exit 1
+esac
+
+exit 0
