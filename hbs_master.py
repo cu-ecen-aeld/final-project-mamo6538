@@ -1,6 +1,6 @@
 import argparse
 from hbs_master_3b import hbs_sample_3, init_leds, trigger_led, read_food_res_lvl_sensor, read_food_bowl_lvl_sensor
-from hbs_master_4b import hbs_sample_4, read_water_sensor
+from hbs_master_4b import hbs_sample_4, read_dht_sensor
 import time
 import json
 from random import randint
@@ -48,10 +48,11 @@ def read_sensors(rpi_version, tracker_dist):
     food_res_lvl = read_food_res_lvl_sensor()
     food_bowl_lvl = read_food_bowl_lvl_sensor()
     water_bowl_lvl = randint(40, 60)
+    temp = randint(65, 75)
   else:
     food_res_lvl = randint(20,40)
     food_bowl_lvl = randint(3,8)
-    water_bowl_lvl = read_water_sensor()
+    water_bowl_lvl, temp = read_dht_sensor()
   treat_res_lvl = TREAT_LVL
   pet_dist = tracker_dist
   
@@ -60,7 +61,8 @@ def read_sensors(rpi_version, tracker_dist):
                  "food_bowl_lvl" : food_bowl_lvl,
                  "food_res_lvl" : food_res_lvl,
                  "treat_lvl" : treat_res_lvl,
-                 "pet_dist" : pet_dist}
+                 "pet_dist" : pet_dist,
+                 "temp": temp}
   
   return sensor_data
 
