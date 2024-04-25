@@ -11,7 +11,7 @@ import datetime
 TREAT_LVL = 50
 
 # List of user configured feeding times
-FEED_TIMES = ['00:01', '00:02', '00:05']
+FEED_TIMES = ['00:00', '00:01', '00:02']
 # Amount of food to dispense at automatic feeding (in ounces)
 FOOD_AMOUNT_AUTO = ['8', '4', '7']
 # Flag to determine whether automatic feeding is enabled or not
@@ -107,6 +107,7 @@ def main(rpi_version):
         if (iter % 10 == 0):
           dispense_water(rpi_version)
 
+        iter += 1
         time.sleep(10)
 
 if __name__ == "__main__":
