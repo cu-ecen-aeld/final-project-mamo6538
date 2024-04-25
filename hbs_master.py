@@ -1,34 +1,40 @@
 import argparse
 from hbs_master_3b import hbs_sample_3, init_leds, trigger_led, read_food_res_lvl_sensor, read_food_bowl_lvl_sensor
+from hbs_master_3b import FOOD_LED, WATER_LED, TREAT_LED
 from hbs_master_4b import hbs_sample_4, read_dht_sensor
 import time
 import json
 from random import randint
 import datetime
 
-# Maximum water level reading (100% equivalent)
-WATER_HIGH_LVL = 1.1
 # Initial start of the treat level (in oz.)
 TREAT_LVL = 50
 
 # List of user configured feeding times
-FEED_TIMES = []
+FEED_TIMES = ['00:01', '00:02', '00:05']
 # Amount of food to dispense at automatic feeding (in ounces)
-FOOD_AMOUNT_AUTO = []
-# Amount of food to dispense at user controlled feeding (in ounces)
-FOOD_AMOUNT_GEN = 8
+FOOD_AMOUNT_AUTO = ['8', '4', '7']
 # Flag to determine whether automatic feeding is enabled or not
-AUTO_FEED_ENABLED = False
+AUTO_FEED_ENABLED = True
 
 # Initialize water sensor values and LEDs
 def init_system(rpi_version):
-  global WATER_HIGH_LVL
   if rpi_version == 3:
     init_leds()
-    WATER_HIGH_LVL = 1.1
-  else:
-    WATER_HIGH_LVL = read_water_sensor()
-  print("Init water high lvl {}".format(WATER_HIGH_LVL))
+
+# Dispensing water
+def dispense_water(rpi_version):
+  if rpi_version == 3:
+    trigger_led(WATER_LED)
+  print("Dispensing water")
+
+# Dispensing a treat
+def dispense_treat(rpi_version):
+  global TREAT_LVL
+  if rpi_version == 3:
+    trigger_led(TREAT_LED)
+  TREAT_LVL = max(TREAT_LVL-1, 0)
+  print("Dispensing treat. Treat level at {}".format(TREAT_LVL))
 
 # Check if it is time to automatically dispense food
 def dispense_food(rpi_version):
@@ -73,6 +79,7 @@ def main(rpi_version):
         hbs_sample_4()
     
     tracker_dist = 0
+    iter = 0
     init_system(rpi_version)
     print("Initialized Home Base Station")
 
@@ -91,6 +98,14 @@ def main(rpi_version):
             tracker_dist += 2
         else:
             tracker_dist -= 2
+
+        # Simulate dispensing a treat
+        if (iter % 15 == 0):
+          dispense_treat(rpi_version)
+
+        # Simulate dispensing water
+        if (iter % 10 == 0):
+          dispense_water(rpi_version)
 
         time.sleep(10)
 
