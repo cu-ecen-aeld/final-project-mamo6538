@@ -11,9 +11,9 @@ import datetime
 TREAT_LVL = 50
 
 # List of user configured feeding times
-FEED_TIMES = ['0:0', '0:1', '0:2', '0:5', '0:7']
+FEED_TIMES = ['0:1', '0:2', '0:5', '0:7']
 # Amount of food to dispense at automatic feeding (in ounces)
-FOOD_AMOUNT_AUTO = ['8', '4', '7']
+FOOD_AMOUNT_AUTO = ['8', '4', '7', '8']
 # Flag to determine whether automatic feeding is enabled or not
 AUTO_FEED_ENABLED = True
 
@@ -24,17 +24,17 @@ def init_system(rpi_version):
 
 # Dispensing water
 def dispense_water(rpi_version):
+  print("Dispensing water")
   if rpi_version == 3:
     trigger_led(WATER_LED)
-  print("Dispensing water")
 
 # Dispensing a treat
 def dispense_treat(rpi_version):
   global TREAT_LVL
+  TREAT_LVL = max(TREAT_LVL-1, 0)
+  print("Dispensing treat. Treat level now at {}".format(TREAT_LVL))
   if rpi_version == 3:
     trigger_led(TREAT_LED)
-  TREAT_LVL = max(TREAT_LVL-1, 0)
-  print("Dispensing treat. Treat level at {}".format(TREAT_LVL))
 
 # Check if it is time to automatically dispense food
 def dispense_food(rpi_version):
@@ -44,9 +44,9 @@ def dispense_food(rpi_version):
   time = str(hour) + ":" + str(min)
   if time in FEED_TIMES:
     time_idx = FEED_TIMES.index(time)
-    if rpi_version == 3:
-        trigger_led(FOOD_LED)
     print("Automated feeding - dispensing {} oz.".format(FOOD_AMOUNT_AUTO[time_idx]))
+    if rpi_version == 3:
+        trigger_led(FOOD_LED)    
 
 # Get data from sensors and put into a JSON format
 def read_sensors(rpi_version, tracker_dist):
@@ -100,11 +100,11 @@ def main(rpi_version):
             tracker_dist -= 2
 
         # Simulate dispensing a treat
-        if (iter % 15 == 0):
+        if ((iter != 0) and (iter % 8 == 0)):
           dispense_treat(rpi_version)
 
         # Simulate dispensing water
-        if (iter % 10 == 0):
+        if ((iter != 0) and (iter % 5 == 0)):
           dispense_water(rpi_version)
 
         iter += 1
