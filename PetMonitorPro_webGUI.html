@@ -29,7 +29,7 @@
         outline: none;
         padding: 1% 1%;
         font-size: 17px;
-        width: 20%;
+        width: 50%;
         height: 100%;
       }
       .topnav button:hover {
@@ -382,35 +382,12 @@
         //Updating GUI functions
         function updateGUI() {
           AWSget();
-          updateGraphs();
           updateLabels();
           setAlerts(); //update the alerts with new values
           clear_log();
           
           //makes this function run infinitely every 10sec
           setTimeout(updateGUI, 10000);
-        }
-        
-        function updateGraphs() {
-          var Gdata = [{
-            x: x,
-            y: [],
-            mode: "lines"
-          }]
-          var graphName = "FoodGraph";
-          Gdata[0].y = foodData;
-          layout = FoodLayout;
-          Plotly.newPlot(graphName, Gdata, layout);
-          
-          graphName = "WaterGraph";
-          Gdata[0].y = waterData;
-          layout = WaterLayout;
-          Plotly.newPlot(graphName, Gdata, layout);
-          
-          graphName = "TrackGraph";
-          Gdata[0].y = distData;
-          layout = DistLayout;
-          Plotly.newPlot(graphName, Gdata, layout);
         }
         
         function updateLabels() {
@@ -463,51 +440,42 @@
 
   <body>
     <div class="topnav">
-      <button class="tablinks active" id="FoodTab" onclick="selectTab(event, 'Food')">Food</button>
-      <button class="tablinks" onclick="selectTab(event, 'Water')">Water</button>
-      <button class="tablinks" onclick="selectTab(event, 'Cam')">Camera</button>
-      <button class="tablinks" onclick="selectTab(event, 'Track')">Tracking Distance</button>
+      <button class="tablinks active" id="DisplayTab" onclick="selectTab(event, 'Display')">Monitor Display</button>
       <button class="tablinks" onclick="selectTab(event, 'Setting')">Settings</button>
     </div>
     
-    <div id="Food" class="tabcontent" style="display:block">
-      <div class="info-group">
-        <div style="float:left">
+    <div id="Display" class="tabcontent" style="display:block">
+
+        <div style="float:left; width:33.33%; padding-left:50px">
+          <h2> Food </h2>
           <h4 id="cfb">Current Food Bowl Level: 3oz</h4>
           <input type="submit" id="dispense_food" value="Dispense Food" style="padding: 5px 5px">
-        </div>
-        <div style="float:right">
+          <br>
           <h4 id="ctl">Remaining Treat Level: 3lbs</h4>
           <input type="submit" id="give_treat" value="Give Treat" style="padding: 5px 5px">
+          <br>
+          <br>
+          <h4 id="csl">Remaining Food Storage: 40lbs</h4>
         </div>
-        <h4 id="csl">Remaining Food Storage: 40lbs</h4>
-      </div>
-      <div id="FoodGraph" class="myGraph"></div>
-    </div>
-    
-    <div id="Water" class="tabcontent">
-      <div class="info-group">
-        <h4 id="cwl">Current Water Bowl Level: 30%</h4>
-        <div style="float:left; width:33.33%">
-          <input type="submit" id="empty_bowl" value="Empty Bowl" style="padding: 5px 5px">
+        
+        <div style="float:right; width:33.33%; padding-right:50px">
+          <h4 id="cwl">Current Water Bowl Level: 30%</h4>
+          <div style="float:left; width:33.33%">
+            <input type="submit" id="empty_bowl" value="Empty Bowl" style="padding: 5px 5px">
+          </div>
+          <div style="float:right; width:33.33%">
+            <input type="submit" id="fill_bowl" value="Fill Bowl" style="padding: 5px 5px">
+          </div>
         </div>
-        <div style="float:right; width:33.33%">
-          <input type="submit" id="fill_bowl" value="Fill Bowl" style="padding: 5px 5px">
+        
+        <div style="float:left; width:33.33%;">
+          <h4 id="cdl">Current Tracking Distance: 10m</h4>
+          <h4 >Current Temperature: </h4>
+          <div id="ctc">25 degC</div>
+          <br>
+          <div id="ctf">75 degF</div>
         </div>
-      </div>
-      <div id="WaterGraph" class="myGraph"></div>
-    </div>
-    
-    <div id="Cam" class="tabcontent">
-      <h2>Webcam</h2>
-      <img id="image-id" src="local_pic.jpg" alt="webcam link is down..." style="width:400px;height:400px;">
-    </div>
-    
-    <div id="Track" class="tabcontent">
-      <div class="info-group">
-        <h4 id="cdl">Current Tracking Distance: 10m</h4>
-      </div>
-      <div id="TrackGraph" class="myGraph"></div>
+      
     </div>
     
     <div id="Setting" class="tabcontent">
