@@ -1,11 +1,21 @@
+# pylint: disable=import-not-at-top
 import argparse
-from hbs_master_3b import hbs_sample_3, init_leds, trigger_led, read_food_res_lvl_sensor, read_food_bowl_lvl_sensor
-from hbs_master_3b import FOOD_LED, WATER_LED, TREAT_LED
-from hbs_master_4b import hbs_sample_4, read_dht_sensor
 import time
 import json
 from random import randint
 import datetime
+
+try:
+	from hbs_master_3b import hbs_sample_3, init_leds, trigger_led, read_food_res_lvl_sensor, read_food_bowl_lvl_sensor
+	from hbs_master_3b import FOOD_LED, WATER_LED, TREAT_LED
+except ImportError:
+	pass
+
+try:
+	from hbs_master_4b import hbs_sample_4, read_dht_sensor
+except ImportError:
+	pass
+
 
 # Initial start of the treat level (in oz.)
 TREAT_LVL = 50
