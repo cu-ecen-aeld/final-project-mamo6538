@@ -158,24 +158,23 @@ def handle_actions(msg):
 # Handle settings changes from the GUI
 def handle_settings(msg):
   global FEED_TIMES, FOOD_AMOUNT_AUTO, FOOD_AMOUNT_GEN, AUTO_FEED_ENABLED
-  if "feed_times" in msg:
+  d = json.loads(msg)
+  print("Setting food dispensing amount to {} oz.".format(d['food_amount_gen']))
+  FOOD_AMOUNT_GEN = d['food_amount_gen']
+  
+  print("Adjusting automatic feeding to {}".format(d['auto_feed']))
+  AUTO_FEED_ENABLED = d['auto_feed']
+  
+  if AUTO_FEED_ENABLED:
+    # update feeding schedule and amounts
     print("Adjusting feeding schedule")
-    d = json.loads(msg)
     FEED_TIMES.clear()
     FEED_TIMES = d['feed_times']
     print(FEED_TIMES)
-  if "food_amount_auto" in msg:
-    d = json.loads(msg)
+    
     print("Setting automatic feeding food amount to {} oz.".format(d['food_amount_auto']))
     FOOD_AMOUNT_AUTO = d['food_amount_auto']
-  if "food_amount_gen" in msg:
-    d = json.loads(msg)
-    print("Setting food dispensing amount to {} oz.".format(d['food_amount_gen']))
-    FOOD_AMOUNT_GEN = d['food_amount_gen']
-  if "auto_feed" in msg:
-    d = json.loads(msg)
-    print("Adjusting automatic feeding to {}".format(d['auto_feed']))
-    AUTO_FEED_ENABLED = d['auto_feed']
+    
 
 def main():
     if RPI_VERSION == 3:
