@@ -124,8 +124,8 @@
               current_d = data.current_levels.dist;
               current_t = data.current_levels.treat;
               current_w = data.current_levels.water;
-              current_tc = data.current_levels.tempC;
-              current_tf = data.current_levels.tempF;
+              current_tf = data.current_levels.temp;
+              current_tc = ((current_tf - 32) * 5 ) / 9;
    	    }
    	  };
        	  

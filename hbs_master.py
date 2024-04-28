@@ -37,8 +37,8 @@ AUTO_FEED_ENABLED = False
 
 # Websocket Handling
 class WSHandler(tornado.websocket.WebSocketHandler):	
-  testVal = 3
-
+  tracker_dist = 0
+  
   #enable cross domain origin (idk)
   def check_origin(self, origin):
     return True
@@ -53,7 +53,22 @@ class WSHandler(tornado.websocket.WebSocketHandler):
   def on_message(self, message):
     print("Received:" + message)
     if(message == "get"):
-      self.write_message(str(self.testVal))
+      # Read sensor values
+      data = read_sensors(self.tracker_dist)
+      json_str = json.dumps(data, default=str)
+      # send back
+      self.write_message(json_str)
+      
+      # If automatic feeding is enabled, check if it's time to dispense food
+      if AUTO_FEED_ENABLED:
+        dispense_food()
+
+      # Update iterators for next loop
+      if self.tracker_dist < 50:
+        self.tracker_dist += 2
+      else:
+        self.tracker_dist -= 2
+      
     elif ('action' in message):
       handle_actions(message)
     elif ('settings' in message):
@@ -71,20 +86,18 @@ def make_app():
 
 # Initialize water sensor values and LEDs
 def init_system():
-  global RPI_VERSION
   if RPI_VERSION == 3:
     init_leds()
 
 # Dispensing water
 def dispense_water():
-  global RPI_VERSION
   print("Dispensing water")
   if RPI_VERSION == 3:
     trigger_led(WATER_LED)
 
 # Dispensing a treat
 def dispense_treat():
-  global TREAT_LVL, RPI_VERSION
+  global TREAT_LVL
   TREAT_LVL = max(TREAT_LVL-1, 0)
   print("Dispensing treat. Treat level now at {}".format(TREAT_LVL))
   if RPI_VERSION == 3:
@@ -92,7 +105,6 @@ def dispense_treat():
 
 # Check if it is time to automatically dispense food
 def dispense_food():
-  global RPI_VERSION
   hour = datetime.datetime.now().hour
   min = datetime.datetime.now().minute
 
@@ -105,7 +117,6 @@ def dispense_food():
 
 # Get data from sensors and put into a JSON format
 def read_sensors(tracker_dist):
-  global RPI_VERSION
   if RPI_VERSION == 3:
     food_res_lvl = read_food_res_lvl_sensor()
     food_bowl_lvl = read_food_bowl_lvl_sensor()
@@ -130,7 +141,6 @@ def read_sensors(tracker_dist):
 
 # Handle actions from the GUI
 def handle_actions(msg):
-  global RPI_VERSION
   if msg['action'] == 'empty_water':
     dispense_water()
   elif msg['action'] == 'fill_water':
@@ -163,43 +173,22 @@ def handle_settings(msg):
     AUTO_FEED_ENABLED = msg['auto_feed']
 
 def main():
-    global RPI_VERSION
     if RPI_VERSION == 3:
         hbs_sample_3()
     elif RPI_VERSION == 4:
         hbs_sample_4()
 
-    tracker_dist = 0
     init_system()
     print("Initialized Home Base Station")
 
     application = make_app()
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8888)
+    print("Starting Server")
     tornado.ioloop.IOLoop.current().start()
 
-    ### TODO - Need to tie the sensor reading and auto feed checking/distance updating to server ###
-    while True:
-        # Read sensor values
-        data = read_sensors(rpi_version, tracker_dist)
-        json_str = json.dumps(data, default=str)
-        print(json_str)
-        #TODO - push sensor readings so gui is updated?
-
-        # If automatic feeding is enabled, check if it's time to dispense food
-        if AUTO_FEED_ENABLED:
-            dispense_food(rpi_version)
-
-        # Update iterators for next loop
-        if tracker_dist < 50:
-            tracker_dist += 2
-        else:
-            tracker_dist -= 2
-
-        time.sleep(10)
 
 if __name__ == "__main__":
-  global RPI_VERSION
   parser = argparse.ArgumentParser(description='Run pet monitor system')
   parser.add_argument('rpi_version')
   args = parser.parse_args()
