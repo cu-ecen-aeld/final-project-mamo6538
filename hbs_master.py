@@ -162,8 +162,9 @@ def handle_settings(msg):
     print("Adjusting automatic feeding to {}".format(msg['auto_feed']))
     AUTO_FEED_ENABLED = msg['auto_feed']
 
-def main():
+def main(rpi_version):
     global RPI_VERSION
+    RPI_VERSION = rpi_version
     if RPI_VERSION == 3:
         hbs_sample_3()
     elif RPI_VERSION == 4:
@@ -199,10 +200,8 @@ def main():
         time.sleep(10)
 
 if __name__ == "__main__":
-  global RPI_VERSION
   parser = argparse.ArgumentParser(description='Run pet monitor system')
   parser.add_argument('rpi_version')
   args = parser.parse_args()
   print('RPi version {} specified'.format(args.rpi_version))
-  RPI_VERSION = int(args.rpi_version)
-  main()
+  main(int(args.rpi_version))
