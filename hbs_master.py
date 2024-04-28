@@ -159,21 +159,21 @@ def handle_actions(msg):
 def handle_settings(msg):
   global FEED_TIMES, FOOD_AMOUNT_AUTO, FOOD_AMOUNT_GEN, AUTO_FEED_ENABLED
   d = json.loads(msg)
-  print("Setting food dispensing amount to {} oz.".format(d['food_amount_gen']))
-  FOOD_AMOUNT_GEN = d['food_amount_gen']
+  print("Setting food dispensing amount to {} oz.".format(d['settings']['food_amount_gen']))
+  FOOD_AMOUNT_GEN = d['settings']['food_amount_gen']
   
-  print("Adjusting automatic feeding to {}".format(d['auto_feed']))
-  AUTO_FEED_ENABLED = d['auto_feed']
+  print("Adjusting automatic feeding to {}".format(d['settings']['auto_feed']))
+  AUTO_FEED_ENABLED = d['settings']['auto_feed']
   
   if AUTO_FEED_ENABLED:
     # update feeding schedule and amounts
     print("Adjusting feeding schedule")
     FEED_TIMES.clear()
-    FEED_TIMES = d['feed_times']
+    FEED_TIMES = d['settings']['feed_times']
     print(FEED_TIMES)
     
-    print("Setting automatic feeding food amount to {} oz.".format(d['food_amount_auto']))
-    FOOD_AMOUNT_AUTO = d['food_amount_auto']
+    print("Setting automatic feeding food amount to {} oz.".format(d['settings']['food_amount_auto']))
+    FOOD_AMOUNT_AUTO = d['settings']['food_amount_auto']
     
 
 def main():

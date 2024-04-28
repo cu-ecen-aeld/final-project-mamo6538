@@ -121,7 +121,7 @@
               current_t = data.treat_lvl;
               current_w = data.water_lvl;
               current_tc = data.temp;
-              current_tf = ((current_tf * 9 ) / 5) + 32;
+              current_tf = ((current_tc * 9 ) / 5) + 32;
    	    }
    	  };
        	  
@@ -273,10 +273,12 @@
           }
           
           var myobj = {
+            "settings": {
               "food_amount_gen": document.getElementById("fd").value,
               "auto_feed": fdaisON,
               "feed_times": time_list,
               "food_amount_auto": amt_list
+            }
           };
           wsT.send(JSON.stringify(myobj));
           
