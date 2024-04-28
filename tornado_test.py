@@ -6,6 +6,7 @@ import tornado.websocket
 import tornado.ioloop
 import tornado.web
 
+import json
 
 # Websocket Handling
 class WSHandler(tornado.websocket.WebSocketHandler):
@@ -25,9 +26,25 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		
 	def on_message(self, message):
 		if(message == "get"):
-			self.write_message(str(self.testVal))
+			sensor_data = {"timestamp" : '1992',
+			"water_lvl" : 50,
+			"food_bowl_lvl" : 33,
+			"food_res_lvl" : 45,
+			"treat_lvl" : 90,
+			"pet_dist" : 8,
+			"temp": 75}
+			json_str = json.dumps(sensor_data, default=str)
+			# send back
+			self.write_message(json_str)
+		elif ('action' in message):
+			print("action")
+			d = json.loads(message)
+			print(d['action'])
+		elif ('settings' in message):
+			print("setting")
+			print(message['auto_feed'])
 		else:
-			print("Received:" + message)
+			print("Message received is unknown type")
 		
 		
 	def check_origin(self, origin):

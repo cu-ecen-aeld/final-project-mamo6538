@@ -70,7 +70,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         self.tracker_dist -= 2
       
     elif ('action' in message):
-      handle_actions(message)
+      d = json.loads(message)
+      handle_actions(d)
     elif ('settings' in message):
       handle_settings(message)
     else:
@@ -159,18 +160,22 @@ def handle_settings(msg):
   global FEED_TIMES, FOOD_AMOUNT_AUTO, FOOD_AMOUNT_GEN, AUTO_FEED_ENABLED
   if "feed_times" in msg:
     print("Adjusting feeding schedule")
+    d = json.loads(msg)
     FEED_TIMES.clear()
-    FEED_TIMES = msg['feed_times']
+    FEED_TIMES = d['feed_times']
     print(FEED_TIMES)
   if "food_amount_auto" in msg:
-    print("Setting automatic feeding food amount to {} oz.".format(msg['food_amount_auto']))
-    FOOD_AMOUNT_AUTO = msg['food_amount_auto']
+    d = json.loads(msg)
+    print("Setting automatic feeding food amount to {} oz.".format(d['food_amount_auto']))
+    FOOD_AMOUNT_AUTO = d['food_amount_auto']
   if "food_amount_gen" in msg:
-    print("Setting food dispensing amount to {} oz.".format(msg['food_amount_gen']))
-    FOOD_AMOUNT_GEN = msg['food_amount_gen']
+    d = json.loads(msg)
+    print("Setting food dispensing amount to {} oz.".format(d['food_amount_gen']))
+    FOOD_AMOUNT_GEN = d['food_amount_gen']
   if "auto_feed" in msg:
-    print("Adjusting automatic feeding to {}".format(msg['auto_feed']))
-    AUTO_FEED_ENABLED = msg['auto_feed']
+    d = json.loads(msg)
+    print("Adjusting automatic feeding to {}".format(d['auto_feed']))
+    AUTO_FEED_ENABLED = d['auto_feed']
 
 def main():
     if RPI_VERSION == 3:
