@@ -122,6 +122,10 @@
               current_w = data.water_lvl;
               current_tc = data.temp;
               current_tf = ((current_tc * 9 ) / 5) + 32;
+              
+              updateLabels();
+              setAlerts(); //update the alerts with new values
+              clear_log();
    	    }
    	  };
        	  
@@ -299,9 +303,6 @@
         //Updating GUI functions
         function updateGUI() {
           AWSget();
-          updateLabels();
-          setAlerts(); //update the alerts with new values
-          clear_log();
           
           //makes this function run infinitely every 10sec
           setTimeout(updateGUI, 10000);
