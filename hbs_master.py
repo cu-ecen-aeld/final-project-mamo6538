@@ -122,7 +122,7 @@ def read_sensors(tracker_dist):
     food_res_lvl = read_food_res_lvl_sensor()
     food_bowl_lvl = read_food_bowl_lvl_sensor()
     water_bowl_lvl = randint(40, 60)
-    temp = randint(65, 75)
+    temp = randint(18, 24)
   else:
     food_res_lvl = randint(20,40)
     food_bowl_lvl = randint(3,8)

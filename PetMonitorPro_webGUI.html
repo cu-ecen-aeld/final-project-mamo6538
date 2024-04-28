@@ -120,8 +120,8 @@
               current_d = data.pet_dist;
               current_t = data.treat_lvl;
               current_w = data.water_lvl;
-              current_tf = data.temp;
-              current_tc = ((current_tf - 32) * 5 ) / 9;
+              current_tc = data.temp;
+              current_tf = ((current_tf * 9 ) / 5) + 32;
    	    }
    	  };
        	  
@@ -273,12 +273,10 @@
           }
           
           var myobj = {
-            "settings": {
               "food_amount_gen": document.getElementById("fd").value,
               "auto_feed": fdaisON,
               "feed_times": time_list,
               "food_amount_auto": amt_list
-            }
           };
           wsT.send(JSON.stringify(myobj));
           
@@ -321,7 +319,7 @@
           //if a level is too low AND its on, set text to red & send 'alert' to AWS
           if(wALisON && (current_w < document.getElementById("wal").value)) {
             document.getElementById("cwl").style.color = "#FF0000";
-            var msg = {'alert': 'water level is too low: ' + current_w + '%'};
+            var msg = '{"alert": "water level is too low: " + current_w + "%"}';
             sendAlert(msg);
           }
           else
@@ -329,7 +327,7 @@
           
           if(dALisON && (current_d > document.getElementById("dal").value)) {
             document.getElementById("cdl").style.color = "#FF0000";
-            msg = {'alert': 'pet distance is too far: ' + current_d + 'm'};
+            msg = '{"alert": "pet distance is too far: " + current_d + "m"}';
             sendAlert(msg);
           }
           else
@@ -337,7 +335,7 @@
           
           if(fALisON && (current_s < document.getElementById("fal").value)) {
             document.getElementById("csl").style.color = "#FF0000";
-            msg = {'alert': 'remaining food is too low: ' + current_s + 'lbs'};
+            msg = '{"alert": "remaining food is too low: " + current_s + "lbs"}';
             sendAlert(msg);
           }
           else
@@ -345,7 +343,7 @@
           
           if(tALisON && (current_t < document.getElementById("tal").value)) {
             document.getElementById("ctl").style.color = "#FF0000";
-            msg = {'alert': 'treat level is too low: ' + current_t + 'oz'};
+            msg = '{"alert": "treat level is too low: " + current_t + "oz"}';
             sendAlert(msg);
           }
           else
